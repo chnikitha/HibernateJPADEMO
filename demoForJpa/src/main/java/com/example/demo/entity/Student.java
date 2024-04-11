@@ -1,14 +1,12 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.CascadeType;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+
 
 @Entity
 public class Student
@@ -19,16 +17,15 @@ public class Student
 	private String studentName;
 	private String studentEmail;
 	private String studentAddress;
-	@OneToOne(cascade = CascadeType.PERSIST)
-	private Subject subject;
+	
     
-	public Student(long id, String studentName, String studentEmail, String studentAddress, Subject subject) {
+	public Student(long id, String studentName, String studentEmail, String studentAddress) {
 		super();
 		this.id = id;
 		this.studentName = studentName;
 		this.studentEmail = studentEmail;
 		this.studentAddress = studentAddress;
-		this.subject = subject;
+		
 	}
     public Student() {
 		super();
@@ -37,7 +34,7 @@ public class Student
     @Override
 	public String toString() {
 		return "Student [id=" + id + ", studentName=" + studentName + ", studentEmail=" + studentEmail
-				+ ", studentAddress=" + studentAddress + ", subject=" + subject + "]";
+				+ ", studentAddress=" + studentAddress + "]";
 	}
 	
 	
@@ -65,14 +62,10 @@ public class Student
 	public void setStudentAddress(String studentAddress) {
 		this.studentAddress = studentAddress;
 	}
-	public Subject getSubject() {
-		return subject;
-	}
-	public void setSubject(Subject subject) {
-		this.subject = subject;
+	
 	}
 	
 	
 	
 
-}
+

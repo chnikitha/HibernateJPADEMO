@@ -13,18 +13,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.example.demo.entity.Auth;
 import com.example.demo.entity.Student;
+import com.example.demo.repo.AuthRepo;
 import com.example.demo.repo.StudentRepo;
 
 @Service
 public class StudentService {
 		@Autowired
 		StudentRepo studentRepo;
+		@Autowired
+		AuthRepo authRepo;
 		
 		public ResponseEntity<Student> saveStudent(@RequestBody Student student)
 		{ 
 			return new ResponseEntity<>(studentRepo.save(student),HttpStatus.CREATED);		
 		}
+		
+		public ResponseEntity<Auth> saveAuth(@RequestBody Auth auth)
+		{ 
+			return new ResponseEntity<>(authRepo.save(auth),HttpStatus.CREATED);			
+		}
+		
+		
 		
 		
 		public ResponseEntity<List<Student>> getStudents(String sortBy, String orderBy) 

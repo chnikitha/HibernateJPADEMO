@@ -15,14 +15,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Service.AuthService;
 import com.example.demo.Service.StudentService;
+import com.example.demo.entity.Auth;
 import com.example.demo.entity.Student;
+import com.example.demo.repo.AuthRepo;
 import com.example.demo.repo.StudentRepo;
 
 @RestController
 public class StudentController {
 	@Autowired
-	StudentService studentService;
+	private StudentService studentService;
+	
+	@Autowired
+	private AuthRepo authRepo;
+	
+	@Autowired
+	private AuthService authService;
 	
 	@PostMapping("/api/students")
 	public ResponseEntity<Student> saveStudent(@RequestBody Student student)
@@ -30,13 +39,28 @@ public class StudentController {
 		return studentService.saveStudent(student)	;	
 	}
 	
+    @PostMapping("/api/auth")
+	public ResponseEntity<Auth> saveAuth(@RequestBody Auth auth)
+	{ 
+		return studentService.saveAuth(auth)	;	
+	}
+ 
+	
+	
 	@GetMapping("/api/students")
-	public ResponseEntity<List<Student>> getStudents(@RequestHeader(value = "SortBy", defaultValue = "name") String sortBy, 
-			@RequestHeader(value = "OrderBy", defaultValue = "ascending") String orderBy) 
+	public ResponseEntity<?> getStudents(@RequestHeader(value = "SortBy", defaultValue = "name") String sortBy, 
+			@RequestHeader(value = "OrderBy", defaultValue = "ascending") String orderBy, @RequestHeader("userName") String username, @RequestHeader("password") String password)
 	{
+		    
+		Auth auth = authRepo.findByUsernameAndPassword(username, password);
+	if (!authService.authenticate(username, password))
+	{
+		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+    }
 		return studentService.getStudents(sortBy,orderBy);
 			
 	}
+	
 	
 	@GetMapping("/api/students/{id}")
 	public ResponseEntity<Student> getStudent(@PathVariable long id) 
