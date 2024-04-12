@@ -23,6 +23,7 @@ import com.example.demo.exception.AuthenticationException;
 import com.example.demo.exception.StudentServiceException;
 import com.example.demo.repo.AuthRepo;
 import com.example.demo.repo.StudentRepo;
+import com.example.demo.vo.AuthRequest;
 import com.example.demo.vo.ResponseVO;
 
 @RestController
@@ -43,11 +44,26 @@ public class StudentController {
 	}
 	
     @PostMapping("/api/auth")
-	public ResponseEntity<Auth> saveAuth(@RequestBody Auth auth)
-	{ 
-		return studentService.saveAuth(auth)	;	
+	public ResponseEntity<?> addUser(@RequestBody AuthRequest authRequest)
+	{
+    	try
+    	{
+    		String username = authRequest.getUsername();
+            String password = authRequest.getPassword();
+            
+            studentService.addUserCredentials(username, password);
+    		return ResponseEntity.ok(authRequest);	
+            
 	}
- 
+    	 catch (AuthenticationException e) {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseVO(HttpStatus.UNAUTHORIZED.value(), "AUTH_001", e.getMessage()));
+         } 
+    	catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseVO(HttpStatus.BAD_REQUEST.value(), "USER_002", "Username and password cannot be null"));}
+    	catch (Exception e) {
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "GEN_001", "Internal server error"));
+         }
+	}
 	
 	
 	@GetMapping("/api/students")

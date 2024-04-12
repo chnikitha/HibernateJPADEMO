@@ -30,9 +30,16 @@ public class StudentService {
 			return new ResponseEntity<>(studentRepo.save(student),HttpStatus.CREATED);		
 		}
 		
-		public ResponseEntity<Auth> saveAuth(@RequestBody Auth auth)
+		public void addUserCredentials(String username, String password)
 		{ 
-			return new ResponseEntity<>(authRepo.save(auth),HttpStatus.CREATED);			
+			 if (username == null || password == null) {
+		            throw new IllegalArgumentException("Username and password cannot be null");
+		        }
+			Auth auth = new Auth();
+	        auth.setUsername(username);
+	        auth.setPassword(password);
+	        authRepo.save(auth);
+			//return new ResponseEntity<>(authRepo.save(auth),HttpStatus.CREATED);			
 		}
 		
 		
