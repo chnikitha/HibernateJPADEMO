@@ -19,8 +19,11 @@ import com.example.demo.Service.AuthService;
 import com.example.demo.Service.StudentService;
 import com.example.demo.entity.Auth;
 import com.example.demo.entity.Student;
+import com.example.demo.exception.AuthenticationException;
+import com.example.demo.exception.StudentServiceException;
 import com.example.demo.repo.AuthRepo;
 import com.example.demo.repo.StudentRepo;
+import com.example.demo.vo.ResponseVO;
 
 @RestController
 public class StudentController {
@@ -53,13 +56,25 @@ public class StudentController {
 	{
 		    
 		
-		if (!authService.authenticate(username, password))
-		{
-			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+		 try 
+		   {
+	            authService.authenticate(username, password);
+	            ResponseEntity<List<Student>> students = studentService.getStudents(sortBy, orderBy);
+	            return ResponseEntity.ok(students);
+	        }
+		 catch (AuthenticationException e)
+		 {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseVO(HttpStatus.UNAUTHORIZED.value(), "AUTH_001", e.getMessage()));
+	       } 
+		 
+		 catch (Exception e)
+		 {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "GEN_001", "Internal server error"));
+	        }
 	    }
-			return studentService.getStudents(sortBy,orderBy);
+	
 			
-	}
+	
 	
 	
 	@GetMapping("/api/students/{id}")
