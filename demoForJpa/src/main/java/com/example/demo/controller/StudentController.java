@@ -49,15 +49,15 @@ public class StudentController {
 	
 	@GetMapping("/api/students")
 	public ResponseEntity<?> getStudents(@RequestHeader(value = "SortBy", defaultValue = "name") String sortBy, 
-			@RequestHeader(value = "OrderBy", defaultValue = "ascending") String orderBy, @RequestHeader("userName") String username, @RequestHeader("password") String password)
+			@RequestHeader(value = "OrderBy", defaultValue = "ascending") String orderBy, @RequestHeader("username") String username, @RequestHeader("password") String password)
 	{
 		    
-		Auth auth = authRepo.findByUsernameAndPassword(username, password);
-	if (!authService.authenticate(username, password))
-	{
-		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-    }
-		return studentService.getStudents(sortBy,orderBy);
+		
+		if (!authService.authenticate(username, password))
+		{
+			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+	    }
+			return studentService.getStudents(sortBy,orderBy);
 			
 	}
 	

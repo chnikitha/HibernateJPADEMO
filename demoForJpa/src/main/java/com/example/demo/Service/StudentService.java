@@ -17,7 +17,7 @@ import com.example.demo.entity.Auth;
 import com.example.demo.entity.Student;
 import com.example.demo.repo.AuthRepo;
 import com.example.demo.repo.StudentRepo;
-
+  
 @Service
 public class StudentService {
 		@Autowired
