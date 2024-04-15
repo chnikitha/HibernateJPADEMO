@@ -12,7 +12,6 @@ public class ResponseVO
     private int statusCode;
     private String errorCode;
     private String errorMessage;
-
     
 
     

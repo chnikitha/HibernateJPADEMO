@@ -20,7 +20,6 @@ import com.example.demo.Service.StudentService;
 import com.example.demo.entity.Auth;
 import com.example.demo.entity.Student;
 import com.example.demo.exception.AuthenticationException;
-import com.example.demo.exception.StudentServiceException;
 import com.example.demo.repo.AuthRepo;
 import com.example.demo.repo.StudentRepo;
 import com.example.demo.vo.AuthRequest;
@@ -46,23 +45,15 @@ public class StudentController {
     @PostMapping("/api/auth")
 	public ResponseEntity<?> addUser(@RequestBody AuthRequest authRequest)
 	{
-    	try
-    	{
+    	
     		String username = authRequest.getUsername();
             String password = authRequest.getPassword();
             
-            studentService.addUserCredentials(username, password);
+            studentService.addUserCredentials(authRequest);
     		return ResponseEntity.ok(authRequest);	
             
-	}
-    	 catch (AuthenticationException e) {
-             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseVO(HttpStatus.UNAUTHORIZED.value(), "AUTH_001", e.getMessage()));
-         } 
-    	catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseVO(HttpStatus.BAD_REQUEST.value(), "USER_002", "Username and password cannot be null"));}
-    	catch (Exception e) {
-             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "GEN_001", "Internal server error"));
-         }
+	
+    	 
 	}
 	
 	
@@ -72,21 +63,10 @@ public class StudentController {
 	{
 		    
 		
-		 try 
-		   {
+		 
 	            authService.authenticate(username, password);
 	            ResponseEntity<List<Student>> students = studentService.getStudents(sortBy, orderBy);
-	            return ResponseEntity.ok(students);
-	        }
-		 catch (AuthenticationException e)
-		 {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseVO(HttpStatus.UNAUTHORIZED.value(), "AUTH_001", e.getMessage()));
-	       } 
-		 
-		 catch (Exception e)
-		 {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "GEN_001", "Internal server error"));
-	        }
+	            return ResponseEntity.ok(students);	 
 	    }
 	
 			

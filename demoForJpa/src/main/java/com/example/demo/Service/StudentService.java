@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.example.demo.entity.Auth;
 import com.example.demo.entity.Student;
+import com.example.demo.exception.AuthenticationException;
 import com.example.demo.repo.AuthRepo;
 import com.example.demo.repo.StudentRepo;
+import com.example.demo.vo.AuthRequest;
   
 @Service
 public class StudentService {
@@ -30,14 +32,17 @@ public class StudentService {
 			return new ResponseEntity<>(studentRepo.save(student),HttpStatus.CREATED);		
 		}
 		
-		public void addUserCredentials(String username, String password)
+		public void addUserCredentials(AuthRequest authRequest)
 		{ 
-			 if (username == null || password == null) {
-		            throw new IllegalArgumentException("Username and password cannot be null");
-		        }
+			 
 			Auth auth = new Auth();
-	        auth.setUsername(username);
-	        auth.setPassword(password);
+			
+			if(authRequest.getUsername()==null ||authRequest.getUsername().isEmpty() || authRequest.getPassword()==null||authRequest.getPassword().isEmpty())
+			{
+				throw new AuthenticationException();
+			}
+	       auth.setUsername(authRequest.getUsername());
+	       auth.setPassword(authRequest.getPassword());
 	        authRepo.save(auth);
 			//return new ResponseEntity<>(authRepo.save(auth),HttpStatus.CREATED);			
 		}
@@ -137,8 +142,3 @@ public class StudentService {
 			}
 		}
 		}
-
-
-		
-
-
